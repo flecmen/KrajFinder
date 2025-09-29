@@ -7,8 +7,12 @@ const { getKrajByIco } = useKrajByIco()
 const icoLocal = ref('')
 const kraj = ref('')
 
+const isLoading = ref(false)
+
 async function handleSubmit() {
+  isLoading.value = true
   kraj.value = await getKrajByIco(icoLocal.value)
+  isLoading.value = false
 }
 </script>
 
@@ -27,6 +31,8 @@ async function handleSubmit() {
       name="ico"
     />
   </Form>
+
+  <Loader v-if="isLoading" />
 
   {{ kraj }}
 </template>
