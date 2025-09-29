@@ -5,13 +5,16 @@ import { useVrByIco } from './libs/ObchodniRejstrik/functions/useVRByIco'
 const { getKrajByIco } = useKrajByIco()
 
 const icoLocal = ref('')
-const kraj = ref('')
-
 const isLoading = ref(false)
+
+const kraj = ref('')
+const companyName = ref('')
 
 async function handleSubmit() {
   isLoading.value = true
-  kraj.value = await getKrajByIco(icoLocal.value)
+  const info = await getKrajByIco(icoLocal.value)
+  kraj.value = info?.kraj || 'Nenalezeno'
+  companyName.value = info?.companyName || 'Nenalezeno'
   isLoading.value = false
 }
 </script>
@@ -34,5 +37,13 @@ async function handleSubmit() {
 
   <Loader v-if="isLoading" />
 
+  <b>
+    Nazev:
+  </b> {{ companyName }}
+
+  <br>
+  <b>
+    Kraj:
+  </b>
   {{ kraj }}
 </template>

@@ -12,7 +12,9 @@ export function useKrajByIco() {
 
     const kraj = companyData?.zaznamy?.[0]?.adresy?.[0]?.adresa?.nazevKraje
 
-    return kraj
+    const companyName = companyData?.zaznamy?.[0]?.obchodniJmeno?.[0]?.hodnota
+
+    return { kraj, companyName }
   }
 
   return {
