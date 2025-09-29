@@ -8,10 +8,16 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/eslint',
     '@nuxt/fonts',
+    '@pinia/nuxt',
+    '@pinia/colada-nuxt',
   ],
 
   // Imports https://nuxt.com/docs/api/configuration/nuxt-config#imports
-  imports: {},
+  imports: {
+    dirs: [
+      './libs/**/*',
+    ],
+  },
 
   srcDir: 'client/',
 

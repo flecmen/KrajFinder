@@ -10,12 +10,15 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "vue-tsc --noEmit",
-    "update": "npx npm-check-updates -t latest --interactive"
+    "update": "npx npm-check-updates -t latest --interactive",
+    "generate:api": "swagger-typescript-api generate --extract-response-body --extract-request-params --axios -p https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/v3/api-docs -o ./client/libs/App/functions/api -n generatedSwaggerApi.ts"
   },
   "dependencies": {
     "@floating-ui/dom": "1.7.3",
     "@floating-ui/vue": "1.1.8",
     "@iconify/vue": "5.0.0",
+    "@pinia/colada": "^0.17.6",
+    "@pinia/colada-nuxt": "^0.2.3",
     "@regle/nuxt": "1.7.2",
     "arktype": "2.1.20",
     "axios": "1.11.0",
@@ -37,6 +40,7 @@
     "perfect-scrollbar": "1.5.6",
     "pinia": "3.0.3",
     "pinia-plugin-persistedstate": "4.5.0",
+    "swagger-typescript-api": "^13.2.13",
     "tikki": "3.0.2",
     "uuid": "11.1.0",
     "vue-imask": "7.6.1",

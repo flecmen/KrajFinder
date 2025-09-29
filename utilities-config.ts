@@ -5,10 +5,5 @@ export default extendUtilitiesConfig({
   logging: {
     limit: 50,
   },
+  aresBaseUrl: 'https://ares.gov.cz/ekonomicke-subjekty-v-be/rest',
 })
-
-enum ComparatorEnum {
-  CUSTOM = 'custom',
-}
-
-type DataType = 'some-type'

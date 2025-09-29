@@ -1,40 +1,32 @@
 <script setup lang="ts">
+import { useKrajByIco } from './libs/ObchodniRejstrik/functions/useKrajByIco'
+import { useVrByIco } from './libs/ObchodniRejstrik/functions/useVRByIco'
 
+const { getKrajByIco } = useKrajByIco()
+
+const icoLocal = ref('')
+const kraj = ref('')
+
+async function handleSubmit() {
+  kraj.value = await getKrajByIco(icoLocal.value)
+}
 </script>
 
 <template>
-  <div
-    flex="~ col center gap-10"
-    fit
+  <Form
+    :submit-btn-props="{
+
+    }"
+
+    :submit-confirmation="false"
+    @submit="handleSubmit"
   >
-    <Btn label="Gentl button" />
+    <TextInput
+      v-model="icoLocal"
+      label="IČO"
+      name="ico"
+    />
+  </Form>
 
-    <div class="bg-red color-white rounded-custom p-x-2">
-      UnoCSS included: `bg-red color-white`
-    </div>
-
-    <div flex="~ col gap-1">
-      <span font="semibold">
-        i18n included
-      </span>
-
-      <span
-        text="caption"
-        p="x-2 y-1"
-        rounded="custom"
-        border="1 ca"
-      >
-        From layer: {{ $t('general.column', 2) }}
-      </span>
-
-      <span
-        text="caption"
-        p="x-2 y-1"
-        rounded="custom"
-        border="1 ca"
-      >
-        {{ $t('fromApp') }}
-      </span>
-    </div>
-  </div>
+  {{ kraj }}
 </template>
