@@ -22,9 +22,10 @@ async function handleSubmit() {
 <template>
   <Form
     :submit-btn-props="{
-
+      ui: {
+        btnClass: 'dark:color-white color-black',
+      },
     }"
-
     :submit-confirmation="false"
     @submit="handleSubmit"
   >
