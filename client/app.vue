@@ -2,19 +2,27 @@
 import { useKrajByIco } from './libs/ObchodniRejstrik/functions/useKrajByIco'
 import { useVrByIco } from './libs/ObchodniRejstrik/functions/useVRByIco'
 
-const { getKrajByIco } = useKrajByIco()
+const { getKrajByIco, getKrajsByManyIcos } = useKrajByIco()
 
-const icoLocal = ref('')
+const info = ref()
 const isLoading = ref(false)
+const ica = ref('')
+const icaArr = computed(() => {
+  if (isEmpty(ica.value)) {
+    return []
+  }
+
+  return ica.value
+    .split('\n')
+    .map(ico => ico.trim())
+})
 
 const kraj = ref('')
 const companyName = ref('')
 
 async function handleSubmit() {
   isLoading.value = true
-  const info = await getKrajByIco(icoLocal.value)
-  kraj.value = info?.kraj || 'Nenalezeno'
-  companyName.value = info?.companyName || 'Nenalezeno'
+  info.value = await getKrajsByManyIcos(icaArr.value)
   isLoading.value = false
 }
 </script>
@@ -29,22 +37,22 @@ async function handleSubmit() {
     :submit-confirmation="false"
     @submit="handleSubmit"
   >
-    <TextInput
-      v-model="icoLocal"
-      label="IČO"
-      name="ico"
+    <TextArea
+      v-model="ica"
+      placeholder="Vloz seznam IČO"
     />
   </Form>
 
   <Loader v-if="isLoading" />
 
-  <b>
-    Nazev:
-  </b> {{ companyName }}
-
-  <br>
-  <b>
-    Kraj:
-  </b>
-  {{ kraj }}
+  <table>
+    <tr
+      v-for="item in info"
+      :key="item.ico"
+    >
+      <td>{{ item.ico }}</td>
+      <td>{{ item.companyName }}</td>
+      <td>{{ item.kraj }}</td>
+    </tr>
+  </table>
 </template>
