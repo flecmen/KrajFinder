@@ -6,12 +6,17 @@ export default extendUIConfig({
       icon: 'i-emojione:rocket',
       outlined: true,
       noUppercase: true,
-    }
+    },
   },
   textInput: {
     props: {
       label: 'My default label',
       ui: { borderRadius: '0.5rem' },
+    },
+  },
+  table: {
+    props: {
+      features: ['export', 'queryBuilder'],
     },
   },
 })

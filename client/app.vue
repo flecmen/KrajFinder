@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TableColumn } from '$ui'
 import { useKrajByIco } from './libs/ObchodniRejstrik/functions/useKrajByIco'
 import { useVrByIco } from './libs/ObchodniRejstrik/functions/useVRByIco'
 
@@ -6,7 +7,7 @@ const { getKrajByIco, getKrajsByManyIcos } = useKrajByIco()
 
 const info = ref()
 const isLoading = ref(false)
-const ica = ref('')
+const ica = ref('25304046')
 const icaArr = computed(() => {
   if (isEmpty(ica.value)) {
     return []
@@ -17,14 +18,25 @@ const icaArr = computed(() => {
     .map(ico => ico.trim())
 })
 
-const kraj = ref('')
-const companyName = ref('')
-
 async function handleSubmit() {
   isLoading.value = true
   info.value = await getKrajsByManyIcos(icaArr.value)
   isLoading.value = false
 }
+
+const columns = computed<TableColumn[]>(() => [
+  // ico
+  new TableColumn({
+    field: 'ico',
+    label: 'IČO',
+  }),
+
+  // kraj
+  new TableColumn({
+    field: 'kraj',
+    label: 'Kraj',
+  }),
+])
 </script>
 
 <template>
@@ -45,14 +57,8 @@ async function handleSubmit() {
 
   <Loader v-if="isLoading" />
 
-  <table>
-    <tr
-      v-for="item in info"
-      :key="item.ico"
-    >
-      <td>{{ item.ico }}</td>
-      <td>{{ item.companyName }}</td>
-      <td>{{ item.kraj }}</td>
-    </tr>
-  </table>
+  <Table
+    v-model:rows="info"
+    :columns="columns"
+  />
 </template>
