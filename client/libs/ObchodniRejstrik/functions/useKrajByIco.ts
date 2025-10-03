@@ -1,3 +1,9 @@
+const DELAY_BETWEEN_CALLS = 500 // 500ms delay between calls
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 export function useKrajByIco() {
   async function getCompanyInfo(ico: string) {
     return aresApi.ekonomickeSubjektyVr.vratEkonomickySubjektVr({ ico }) as Promise<EkonomickySubjektVr>
@@ -18,54 +24,42 @@ export function useKrajByIco() {
       .map(ico => {
         const sanitized = ico.trim()
         const normalized = sanitized.length < 8 ? sanitized.padStart(8, '0') : sanitized
+
+        console.log('Sanitized ICO:', normalized)
+        console.log('Sanitized Length:', normalized.length)
+
         return normalized
       })
-      .filter((ico): ico is string => Boolean(ico && ico.length > 0))
 
-    if (sanitizedIcos.length === 0) {
-      return []
-    }
+    const results: Array<{
+      ico: string
+      kraj: string | undefined
+      companyName: string | undefined
+      error?: string
+    }> = []
 
-    try {
-      const response = await aresApi.ekonomickeSubjektyVr.vyhledejSeznamEkonomickychSubjektuVr({
-        ico: sanitizedIcos,
-      }) as any as EkonomickeSubjektyVrSeznam
+    for (let index = 0; index < sanitizedIcos.length; index++) {
+      const ico = sanitizedIcos[index]!
 
-      const results = sanitizedIcos.map(ico => {
-        const companyData = response.ekonomickeSubjekty?.find(
-          (subjekt: EkonomickySubjektVr) => subjekt.icoId === ico,
-        )
-
-        if (!companyData) {
-          return {
-            ico,
-            kraj: undefined,
-            companyName: undefined,
-            error: 'Company not found in response',
-          }
-        }
-
-        const kraj = companyData.zaznamy?.[0]?.adresy?.[0]?.adresa?.nazevKraje
-        const companyName = companyData.zaznamy?.[0]?.obchodniJmeno?.[0]?.hodnota
-
-        return {
+      try {
+        const result = await getKrajByIco(ico)
+        results.push({ ico, ...result })
+      }
+      catch (error) {
+        results.push({
           ico,
-          kraj,
-          companyName,
-        }
-      })
+          kraj: undefined,
+          companyName: undefined,
+          error: error instanceof Error ? error.message : String(error),
+        })
+      }
 
-      return results
+      if (index < sanitizedIcos.length - 1) {
+        await delay(DELAY_BETWEEN_CALLS)
+      }
     }
-    catch (error) {
-      // If the batch request fails, return error for all ICOs
-      return sanitizedIcos.map(ico => ({
-        ico,
-        kraj: undefined,
-        companyName: undefined,
-        error: error instanceof Error ? error.message : String(error),
-      }))
-    }
+
+    return results
   }
 
   return {
