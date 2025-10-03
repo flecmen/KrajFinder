@@ -1,6 +1,4 @@
-const RATE_LIMIT_PER_MINUTE = 500
-const MS_PER_MINUTE = 60_000
-const MIN_DELAY_BETWEEN_CALLS = Math.ceil(MS_PER_MINUTE / RATE_LIMIT_PER_MINUTE)
+const DELAY_BETWEEN_CALLS = 500 // 500ms delay between calls
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -23,8 +21,15 @@ export function useKrajByIco() {
 
   async function getKrajsByManyIcos(icos: string[]) {
     const sanitizedIcos = icos
-      .map(ico => ico?.trim())
-      .filter((ico): ico is string => Boolean(ico && ico.length > 0))
+      .map(ico => {
+        const sanitized = ico.trim()
+        const normalized = sanitized.length < 8 ? sanitized.padStart(8, '0') : sanitized
+
+        console.log('Sanitized ICO:', normalized)
+        console.log('Sanitized Length:', normalized.length)
+
+        return normalized
+      })
 
     const results: Array<{
       ico: string
@@ -34,7 +39,7 @@ export function useKrajByIco() {
     }> = []
 
     for (let index = 0; index < sanitizedIcos.length; index++) {
-      const ico = sanitizedIcos[index]
+      const ico = sanitizedIcos[index]!
 
       try {
         const result = await getKrajByIco(ico)
@@ -50,7 +55,7 @@ export function useKrajByIco() {
       }
 
       if (index < sanitizedIcos.length - 1) {
-        await delay(MIN_DELAY_BETWEEN_CALLS)
+        await delay(DELAY_BETWEEN_CALLS)
       }
     }
 

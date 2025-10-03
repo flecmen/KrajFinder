@@ -7,7 +7,7 @@ const { getKrajByIco, getKrajsByManyIcos } = useKrajByIco()
 
 const info = ref()
 const isLoading = ref(false)
-const ica = ref('25304046')
+const ica = ref('')
 const icaArr = computed(() => {
   if (isEmpty(ica.value)) {
     return []
