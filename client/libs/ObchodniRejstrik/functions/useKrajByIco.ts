@@ -1,4 +1,6 @@
-const DELAY_BETWEEN_CALLS = 500 // 500ms delay between calls
+const RATE_LIMIT_PER_MINUTE = 500
+const MS_PER_MINUTE = 60_000
+const MIN_DELAY_BETWEEN_CALLS = Math.ceil(MS_PER_MINUTE / RATE_LIMIT_PER_MINUTE)
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -55,7 +57,7 @@ export function useKrajByIco() {
       }
 
       if (index < sanitizedIcos.length - 1) {
-        await delay(DELAY_BETWEEN_CALLS)
+        await delay(MIN_DELAY_BETWEEN_CALLS)
       }
     }
 
